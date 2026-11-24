@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KR Public Data Hub</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="/" aria-label="처음 화면">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-name">KR Public Data Hub</span>
+    </a>
+    <div class="seg mode" role="group" aria-label="찾을 것">
+      <button type="button" data-mode="stat" class="on">통계</button>
+      <button type="button" data-mode="dart">회사(DART)</button>
+      <button type="button" data-mode="dec">의결서</button>
+      <button type="button" data-mode="ai">AI 추천</button>
+    </div>
+    <form class="search" id="searchForm" role="search" autocomplete="off">
+      <label class="sr-only" for="q">검색</label>
+      <input id="q" name="q" type="search" placeholder="통계 이름, 영문 약어, 비슷한 말 (예: CPI, 원달러 환율, 기업 규모)" maxlength="80">
+      <button type="submit" class="btn btn-primary">검색</button>
+    </form>
+    <div class="conn" id="conn" aria-live="polite"></div>
+  </div>
+  <div class="filters" id="aiNote" hidden>
+    <span class="note">문장으로 필요한 자료를 쓰면 이 프로그램 색인(KOSIS·ECOS·공공데이터포털)에서 볼 만한 자료를 우선순위로 추천합니다.</span>
+    <label class="check">모델 <select id="aiModel" aria-label="AI 모델"></select></label>
+  </div>
+  <div class="filters" id="dartFilters" hidden>
+    <label class="check"><input type="checkbox" id="optListed"> 상장사만</label>
+    <span class="note">회사 이름 검색은 이 PC 안의 회사 목록에서만 합니다. OpenDART에는 고른 회사의 고유번호만 보냅니다.</span>
+  </div>
+  <div class="filters" id="decFilters" hidden>
+    <div class="seg" role="group" aria-label="찾는 방식">
+      <button type="button" data-decmode="word" class="on">낱말 검색</button>
+      <button type="button" data-decmode="ai">AI 질문</button>
+    </div>
+    <label class="check" id="decModelWrap" hidden>모델 <select id="decModel" aria-label="AI 모델"></select></label>
+    <label class="check">위반유형 <select id="decType" aria-label="위반유형"><option value="">전체</option></select></label>
+    <label class="check">조치 <select id="decAct" aria-label="대표조치유형"><option value="">전체</option></select></label>
+    <span class="check">의결 연도 <input type="text" class="yr" id="decY1" inputmode="numeric" maxlength="4" placeholder="처음" aria-label="의결 연도 시작"> ~
+      <input type="text" class="yr" id="decY2" inputmode="numeric" maxlength="4" placeholder="끝" aria-label="의결 연도 끝"></span>
+    <div class="seg" role="group" aria-label="정렬" id="decSortSeg">
+      <button type="button" data-decsort="date" class="on">최신순</button>
+      <button type="button" data-decsort="hits">많이 나온 순</button>
+    </div>
+    <span class="note" id="decNote">검색은 이 프로그램 안 색인에서만 합니다(검색어가 밖으로 나가지 않음).</span>
+  </div>
+  <div class="filters" id="filters">
+    <div class="seg" role="group" aria-label="기관">
+      <button type="button" data-source="" class="on">전체 기관</button>
+      <button type="button" data-source="KOSIS">KOSIS</button>
+      <button type="button" data-source="ECOS">ECOS</button>
+      <button type="button" data-source="DATAGO">공공데이터포털</button>
+    </div>
+    <div class="seg" role="group" aria-label="주기">
+      <button type="button" data-cycle="" class="on">모든 주기</button>
+      <button type="button" data-cycle="A">연</button>
+      <button type="button" data-cycle="Q">분기</button>
+      <button type="button" data-cycle="M">월</button>
+      <button type="button" data-cycle="D">일</button>
+    </div>
+    <label class="check"><input type="checkbox" id="optSyn" checked> 동의어도 함께 찾기</label>
+    <label class="check"><input type="checkbox" id="optRecent"> 지금도 나오는 통계만</label>
+  </div>
+</header>
+
+<main class="work" id="work">
+  <section class="results" id="results" aria-label="검색 결과"></section>
+  <div class="side">
+    <section class="panel ai-brief" id="aiBrief" aria-label="AI 추천 설명" hidden></section>
+    <section class="detail" id="detail" aria-label="통계 상세"></section>
+  </div>
+</main>
+
+<div class="dock" id="dock" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

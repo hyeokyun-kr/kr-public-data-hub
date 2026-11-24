@@ -1,0 +1,18 @@
+# 키
+.env
+
+# 내려받거나 만든 데이터(크기가 커서 저장소에 넣지 않음 — README '시작하기')
+*.sqlite
+*.sqlite-*
+*.log
+data/download_log.csv
+
+# 파이썬
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# 기타
+.DS_Store

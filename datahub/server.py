@@ -46,7 +46,16 @@ async def lifespan(app: FastAPI):
     dart_due = bool(get_api_key("DART")) and dart_query.corps_stale(state["con"])
 
     async def load():
-        state["catalog"] = await asyncio.to_thread(cat.Catalog)
+        # 회사 목록 새로 받기(같은 색인 파일에 12만 행을 지우고 다시 씀)와 겹치면 읽기가 'database is locked'로
+        # 실패할 수 있다. 예전에는 실패가 조용히 묻혀 화면이 '불러오는 중'에서 영영 멈췄다(2026-11-26). 다시 시도하고 오류를 알린다.
+        for attempt in range(1, 7):
+            try:
+                state["catalog"] = await asyncio.to_thread(cat.Catalog)
+                state["catalog_error"] = None
+                return
+            except Exception as e:  # noqa: BLE001 — 어떤 오류든 화면에 보이게
+                state["catalog_error"] = f"{type(e).__name__}: {e} (시도 {attempt}/6)"
+                await asyncio.sleep(10 * attempt)
 
     state["loading"] = asyncio.create_task(load())
     # 의결서 색인도 바로 함께 읽는다(통계 색인 다음으로 미뤘더니 디스크가 느릴 때 의결서 탭이 오래 '쓸 수 없음'·필터 빈칸, 11/17 되돌림)
@@ -116,6 +125,7 @@ async def status():
         "dart": {**dart_query.corps_info(con), "refreshing": bool(state.get("dart_task") and not state["dart_task"].done()),
                  "error": state.get("dart_error"), "industry": dart_query.industry_info(con), "industry_job": _ind_job()},
         "ready": state.get("catalog") is not None,
+        "catalog_error": state.get("catalog_error"),
         "decision": decisions.status(),
         "catalog": state["catalog"].stats() if state.get("catalog") is not None else {},
         "built": info,

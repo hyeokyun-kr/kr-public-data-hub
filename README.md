@@ -158,6 +158,9 @@ Each check ran on the version current at the time: statistics on v0.1, OpenDART 
 
 ## Changelog
 
+### 2026-11-26
+- Fix: the search index could stay on "loading" forever when the weekly OpenDART company-list refresh was writing to the same file at startup. Loading now retries and the status shows the error.
+
 ### 2026-11-24
 - Public release: renamed to KR Public Data Hub, keys read only from environment variables or `.env`, decision tab made optional, English and Korean README, screenshots.
 

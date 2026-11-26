@@ -146,7 +146,7 @@
     if (!s) { conn.innerHTML = `<span class="bad"><span class="dot"></span>서버 연결 안 됨</span>`; return; }
     if (!s.ready) {   // 처음 켠 직후: 색인을 읽는 동안 기다렸다가 다시 확인
       conn.innerHTML = `<span><span class="dot"></span>검색 색인 불러오는 중</span>`;
-      if (!st.lastQuery) $("#results").innerHTML = `<div class="loading">검색 색인을 불러오는 중입니다. 처음 켤 때는 20초쯤 걸립니다.</div>`;
+      if (!st.lastQuery) $("#results").innerHTML = `<div class="loading">검색 색인을 불러오는 중입니다. 처음 켤 때는 20초쯤 걸립니다.${s.catalog_error ? `<br>읽기에 실패해 다시 시도하는 중입니다: ${esc(s.catalog_error)}` : ""}</div>`;
       setTimeout(loadStatus, 1500);
       return;
     }
